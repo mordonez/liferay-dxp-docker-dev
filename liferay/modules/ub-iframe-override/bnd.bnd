@@ -1,4 +1,0 @@
-Bundle-Name: ub-iframe-override
-Bundle-SymbolicName: ub.iframe.override
-Bundle-Version: 1.0.0
-Fragment-Host: com.liferay.iframe.web;bundle-version="[5.0.0,6.0.0)"
