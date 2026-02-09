@@ -19,6 +19,8 @@ Workspace is in `liferay/`:
 - `liferay/themes/`
 - `liferay/configs/`
 
+An example module lives in `liferay/modules/example-iframe-override` (safe to delete).
+
 Build and hot-deploy:
 ```bash
 make deploy
@@ -46,14 +48,13 @@ docker compose down -v
 
 ## Docs
 Official Liferay Docker references:
-
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/configuring-containers
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/providing-files-to-the-container
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/installing-apps-and-other-artifacts-to-containers
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/running-scripts-in-containers
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/patching-dxp-in-docker
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/container-lifecycle-and-api
-- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/maintenance-and-troubleshooting-in-docker
-- https://hub.docker.com/r/liferay/dxp
-
+```text
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/configuring-containers
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/providing-files-to-the-container
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/installing-apps-and-other-artifacts-to-containers
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/running-scripts-in-containers
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/patching-dxp-in-docker
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/container-lifecycle-and-api
+https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/maintenance-and-troubleshooting-in-docker
+```
