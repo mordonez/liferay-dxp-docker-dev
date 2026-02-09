@@ -3,7 +3,8 @@
 Simple Docker Compose setup for a fresh Liferay DXP plus a workspace for modules and themes.
 
 ## Requirements
-- Docker Desktop
+- Docker
+- Java
 
 ## Quick start
 ```bash
