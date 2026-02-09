@@ -30,7 +30,7 @@ Variables in `.env`:
 Portal properties can also be overridden via `LIFERAY_...` environment variables. These override `portal.properties`. 
 
 ### Portal properties via files
-You can provide a `portal-ext.properties` file (and other overrides) by placing it under `liferay/build/docker/configs/dockerenv/files/` which is mounted to `/mnt/liferay/files` in the container.
+You can provide a `portal-ext.properties` file (and other overrides) by placing it under `liferay/configs/dockerenv/files/`. When you run `make deploy`, the workspace copies it into `liferay/build/docker/configs/dockerenv`, which is mounted to `/mnt/liferay/files` in the container.
 
 ## Development (modules, themes, configs)
 This repo includes a Liferay Workspace in `liferay/`.
