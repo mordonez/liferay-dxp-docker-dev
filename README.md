@@ -48,13 +48,12 @@ docker compose down -v
 
 ## Docs
 Official Liferay Docker references:
-```text
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/configuring-containers
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/providing-files-to-the-container
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/installing-apps-and-other-artifacts-to-containers
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/running-scripts-in-containers
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/patching-dxp-in-docker
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/container-lifecycle-and-api
-https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/maintenance-and-troubleshooting-in-docker
-```
+
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/configuring-containers
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/providing-files-to-the-container
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/installing-apps-and-other-artifacts-to-containers
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/running-scripts-in-containers
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/patching-dxp-in-docker
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/container-lifecycle-and-api
+- https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/using-liferay-docker-images/maintenance-and-troubleshooting-in-docker
