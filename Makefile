@@ -1,11 +1,11 @@
 SHELL := /bin/sh
 
-.PHONY: up down restart logs ps build pull clean shell db deploy setup start gogo
+.PHONY: start stop restart logs ps build pull clean shell db deploy setup  gogo
 
-up:
-	docker compose up -d
+start: setup
+	@docker compose up -d
 
-down:
+stop:
 	docker compose down
 
 restart:
@@ -39,9 +39,6 @@ deploy:
 setup:
 	@cp -n .env.example .env || true
 	@echo "Created .env from .env.example (if it did not exist)."
-
-start: setup
-	@docker compose up -d
 
 clean:
 	docker compose down -v

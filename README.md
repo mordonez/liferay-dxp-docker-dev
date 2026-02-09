@@ -31,8 +31,8 @@ Artifacts land in `liferay/build/docker/deploy` and Liferay picks them up.
 `liferay/scripts/` is mounted to `/usr/local/liferay/scripts` for startup hooks.
 
 ## Useful commands
-- `make up`
-- `make down`
+- `make start`
+- `make stop`
 - `make logs`
 - `make shell`
 - `make gogo`
