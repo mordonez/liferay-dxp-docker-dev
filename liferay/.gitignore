@@ -22,10 +22,5 @@ yarn.lock
 **/liferay-theme.json
 **/*.iml
 
-# Ignore build output except docker configs/deploy tracked for compose mounts
+# Ignore build output
 **/build
-!build/
-!build/docker/
-!build/docker/configs/
-!build/docker/configs/dockerenv/
-!build/docker/deploy/
