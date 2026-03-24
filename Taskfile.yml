@@ -1,0 +1,57 @@
+# https://taskfile.dev
+# liferay-dxp-docker-dev — Tooling base para entornos Liferay DXP
+# Uso: task <namespace>:<tarea> [args]
+# Requiere: task >= 3.28
+version: '3'
+
+vars:
+  DOCKER_DIR: '{{.ROOT_DIR}}/docker'
+  DEV_ENV_CLI: '{{.ROOT_DIR}}/tools/dev-env-cli'
+  LIFERAY_CLI_DIR: '{{.ROOT_DIR}}/tools/liferay-cli'
+  LIFERAY_CLI_JAR: '{{.LIFERAY_CLI_DIR}}/build/libs/liferay-cli-all.jar'
+  LOCAL_OPS_SH: '{{.DEV_ENV_CLI}}/plugins/core/local-ops.sh'
+
+env:
+  REPO_ROOT: '{{.ROOT_DIR}}'
+
+includes:
+  env:
+    taskfile: ./Taskfile.env.yml
+  worktree:
+    taskfile: ./Taskfile.worktree.yml
+
+tasks:
+  liferay:
+    desc: "Ejecutar liferay-cli (REQUERIDO: usar -- para argumentos). Ej: task liferay -- inventory sites"
+    cmds:
+      - java -jar {{.LIFERAY_CLI_JAR}} {{.CLI_ARGS}}
+
+  liferay:build:
+    desc: "Compilar liferay-cli (genera el fat JAR). Ej: task liferay:build"
+    cmds:
+      - cd {{.LIFERAY_CLI_DIR}} && ./gradlew uberJar --console=plain
+
+  default:
+    desc: Listado de comandos disponibles
+    cmds:
+      - task --list --sort alpha
+
+  help:
+    desc: Guía rápida de uso
+    cmds:
+      - |
+        cat <<'EOF'
+        liferay-dxp-docker-dev — Tooling base
+        ======================================
+        Uso: task <namespace>:<subcomando> [args]
+
+        Namespaces disponibles:
+          env:       Ciclo de vida del entorno Docker (start, stop, logs, init)
+          worktree:  Aislamiento por worktree (new, start, rm, gc, btrfs-setup)
+          liferay:   CLI headless API (inventory, resource sync, page-layout)
+
+        Primeros pasos:
+          task env:start              Arrancar el entorno
+          task liferay:build          Compilar el CLI Java (primera vez)
+          task liferay -- --help      Ver comandos del CLI
+        EOF
