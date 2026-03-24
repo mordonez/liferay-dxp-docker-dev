@@ -1,0 +1,60 @@
+plugins {
+    id 'application'
+}
+
+import org.gradle.api.file.DuplicatesStrategy
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'info.picocli:picocli:4.7.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.6'
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'dev.mordonez.liferaycli.LiferayCLIMain'
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+tasks.register('liferayCli', JavaExec) {
+    group = 'liferay-cli'
+    description = 'Ejecuta liferay-cli con argumentos crudos (-PliferayCliArgs="...")'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    doFirst {
+        String value = project.findProperty('liferayCliArgs')?.toString() ?: '--help'
+        args(value.split(' ').findAll { !it.isBlank() })
+    }
+}
+
+tasks.register('uberJar', Jar) {
+    group = 'build'
+    description = 'Construye jar portable (fat jar) de liferay-cli'
+    archiveBaseName = 'liferay-cli'
+    archiveClassifier = 'all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes('Main-Class': application.mainClass.get())
+    }
+    from(sourceSets.main.output)
+    dependsOn(configurations.runtimeClasspath)
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

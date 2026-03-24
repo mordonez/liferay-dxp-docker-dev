@@ -1,0 +1,35 @@
+# https://taskfile.dev
+# Taskfile.worktree.yml — Operaciones de aislamiento por worktree
+version: '3'
+
+tasks:
+  new:
+    desc: "Crear worktree aislado. Ej: task worktree:new NAME=issue-560 BASE=fix/page-layout-cli o task worktree:new -- issue-560 --base fix/page-layout-cli"
+    cmds:
+      - bash {{.LOCAL_OPS_SH}} worktree-setup {{if .NAME}}--name {{.NAME}}{{end}} {{if .BASE}}--base {{.BASE}}{{end}} {{if .WITH_ENV}}--with-env{{end}} {{.CLI_ARGS}}
+
+  start:
+    desc: "Inicializar/arrancar el entorno de un worktree ya creado. Ej: task worktree:start -- issue-560"
+    vars:
+      NAME: '{{.NAME | default .CLI_ARGS}}'
+    cmds:
+      - bash {{.LOCAL_OPS_SH}} worktree-start {{.NAME}}
+
+  rm:
+    desc: "Limpiar/eliminar worktree. Ej: task worktree:rm -- issue-560"
+    vars:
+      NAME: '{{.NAME | default .CLI_ARGS}}'
+    cmds:
+      - bash {{.LOCAL_OPS_SH}} worktree-clean {{.NAME}} --apply {{if .KEEP_BRANCH}}--keep-branch{{end}} {{if .ALLOW_UNREVIEWED_COMMITS}}--allow-unreviewed-commits{{end}}
+
+  gc:
+    desc: "Garbage collect de worktrees antiguos. Ej: task worktree:gc DAYS=14"
+    vars:
+      DAYS: '{{.DAYS | default "7"}}'
+    cmds:
+      - bash {{.LOCAL_OPS_SH}} worktree-gc --days {{.DAYS}} {{.CLI_ARGS}}
+
+  btrfs-setup:
+    desc: Configurar btrfs para worktrees eficientes
+    cmds:
+      - bash {{.LOCAL_OPS_SH}} btrfs-setup {{.CLI_ARGS}}

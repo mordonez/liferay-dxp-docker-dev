@@ -1,0 +1,30 @@
+name: Build & Test
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Test
+        run: ./gradlew test --console=plain
+
+      - name: Build fat JAR
+        run: ./gradlew uberJar --console=plain
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: liferay-cli-jar
+          path: build/libs/liferay-cli-all.jar
+          retention-days: 30

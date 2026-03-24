@@ -1,0 +1,68 @@
+# https://taskfile.dev
+# Taskfile.liferay-cli.yml — Integración mínima de liferay-cli en un proyecto nuevo
+#
+# Uso en tu Taskfile.yml:
+#   includes:
+#     resources:
+#       taskfile: ./Taskfile.liferay-cli.yml
+#       flatten: true
+#
+# O como Taskfile.yml standalone para el directorio tools/liferay-cli/.
+#
+# Requiere: Java 21, tools/dev-env-cli/plugins/resources/liferay-cli.sh (del mismo repo)
+version: '3'
+
+vars:
+  LIFERAY_CLI_DIR: '{{.ROOT_DIR}}/tools/liferay-cli'
+  LIFERAY_CLI_JAR: '{{.ROOT_DIR}}/tools/liferay-cli/build/libs/liferay-cli-all.jar'
+  DEV_ENV_CLI: '{{.ROOT_DIR}}/tools/dev-env-cli'
+
+tasks:
+  liferay-build:
+    desc: Compilar liferay-cli como fat JAR portable
+    dir: '{{.LIFERAY_CLI_DIR}}'
+    sources:
+      - src/**/*.java
+      - build.gradle
+      - settings.gradle
+    generates:
+      - '{{.LIFERAY_CLI_JAR}}'
+    cmds:
+      - ./gradlew uberJar --console=plain
+      - echo "JAR listo en {{.LIFERAY_CLI_JAR}}"
+
+  liferay-test:
+    desc: Ejecutar tests unitarios de liferay-cli
+    dir: '{{.LIFERAY_CLI_DIR}}'
+    cmds:
+      - ./gradlew test --console=plain
+
+  liferay:
+    desc: "Ejecutar liferay-cli. Ej: task liferay -- inventory structures --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh {{.CLI_ARGS}}
+
+  resource-structure-sync:
+    desc: "Sincronizar estructura DDM. Ej: task resource-structure-sync -- --key MY_STR --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh resource structure-sync {{.CLI_ARGS}}
+
+  resource-structure-with-templates-sync:
+    desc: "Sincronizar estructura + plantillas en 1 paso. Ej: task resource-structure-with-templates-sync -- --key MY_STR --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh resource structure-with-templates-sync {{.CLI_ARGS}}
+
+  resource-template-sync:
+    desc: "Sincronizar plantilla FTL. Ej: task resource-template-sync -- --structure-key MY_STR --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh resource template-sync {{.CLI_ARGS}}
+
+  resource-fragments-sync:
+    desc: "Sincronizar page fragments. Ej: task resource-fragments-sync -- --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh resource fragments-sync {{.CLI_ARGS}}
+
+  resource-audit:
+    desc: "Auditoría de recursos del portal. Ej: task resource-audit -- --site /global"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh audit {{.CLI_ARGS}}
