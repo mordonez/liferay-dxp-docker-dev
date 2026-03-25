@@ -51,21 +51,22 @@ public class ThemeCommand implements Callable<Integer> {
                     .connectTimeout(Duration.ofSeconds(root.settings().timeoutSeconds()))
                     .build();
 
-                String mainCssUrl = baseUrl + "/o/ub-theme/css/main.css";
+                String themeName = root.settings().paths().getOrDefault("theme", "ub-theme");
+                String mainCssUrl = baseUrl + "/o/" + themeName + "/css/main.css";
                 String adminIconsUrl = baseUrl + "/o/admin-theme/images/clay/icons.svg";
-                String ubIconsUrl = baseUrl + "/o/ub-theme/images/clay/icons.svg";
-                Path sourceIcons = resolveRepoRoot().resolve("liferay/themes/ub-theme/src/images/clay/icons.svg");
+                String ubIconsUrl = baseUrl + "/o/" + themeName + "/images/clay/icons.svg";
+                Path sourceIcons = resolveRepoRoot().resolve("liferay/themes/" + themeName + "/src/images/clay/icons.svg");
 
-                System.out.println("[INFO] === VERIFICACION DE REGRESIONES DEL TEMA ub-theme ===");
+                System.out.println("[INFO] === VERIFICACION DE REGRESIONES DEL TEMA " + themeName + " ===");
                 requireHttp200(client, mainCssUrl, root.settings().timeoutSeconds());
-                System.out.println("[INFO] ub-theme accesible");
+                System.out.println("[INFO] " + themeName + " accesible");
 
                 Set<String> adminIds = parseIconIds(fetchText(client, adminIconsUrl, root.settings().timeoutSeconds()));
                 Set<String> ubIds = parseIconIds(fetchText(client, ubIconsUrl, root.settings().timeoutSeconds()));
                 Set<String> missing = new TreeSet<>(adminIds);
                 missing.removeAll(ubIds);
 
-                System.out.printf("[INFO] admin-theme: %d iconos | ub-theme: %d iconos%n", adminIds.size(), ubIds.size());
+                System.out.printf("[INFO] admin-theme: %d iconos | %s: %d iconos%n", adminIds.size(), themeName, ubIds.size());
                 if (!missing.isEmpty()) {
                     System.out.printf("[WARN] Faltan %d iconos:%n", missing.size());
                     for (String id : missing) {
@@ -80,7 +81,7 @@ public class ThemeCommand implements Callable<Integer> {
                     return 1;
                 }
                 Set<String> sourceIds = parseIconIds(Files.readString(sourceIcons, StandardCharsets.UTF_8));
-                System.out.println("[INFO] El ub-theme cubre todos los iconos del admin-theme");
+                System.out.println("[INFO] El " + themeName + " cubre todos los iconos del admin-theme");
                 System.out.printf("[INFO] src/images/clay/icons.svg existe (%d iconos)%n", sourceIds.size());
                 System.out.println("[INFO] RESULTADO: sin regresiones detectadas");
                 return 0;

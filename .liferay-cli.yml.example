@@ -1,0 +1,21 @@
+liferay:
+  url: http://localhost:8080
+  oauth2:
+    # IMPORTANTE: No subir credenciales al repositorio.
+    # El portal las genera aleatoriamente en el primer arranque.
+    # Ejecuta 'task osgi:liferaycli-creds' para obtenerlas y configúralas
+    # como variables de entorno (LIFERAY_CLI_OAUTH2_CLIENT_ID/SECRET).
+    clientId: ""
+    clientSecret: ""
+    timeoutSeconds: 30
+paths:
+  # Nombre del tema principal (usado por 'task liferay -- theme check')
+  theme: mi-theme
+  # Directorio base de estructuras JSON
+  structures: liferay/resources/journal/structures
+  # Directorio base de plantillas FTL
+  templates: liferay/resources/journal/templates
+  # Directorio base de page fragments (sin /sites al final)
+  fragments: liferay/fragments
+  # Directorio base de Application Display Templates
+  adts: liferay/resources/templates/application_display
