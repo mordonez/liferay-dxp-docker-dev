@@ -6,7 +6,7 @@
 - Java 21
 - Node.js
 - [Task](https://taskfile.dev) >= 3.28
-- `gh` CLI (para descargar backups desde Liferay Cloud)
+- `lcp` CLI (para descargar backups desde Liferay Cloud)
 
 ---
 
