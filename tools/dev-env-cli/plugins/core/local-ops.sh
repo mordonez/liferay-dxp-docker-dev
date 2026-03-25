@@ -714,13 +714,19 @@ cmd_worktree_env() {
     local gogo_port=$((12000 + offset))
     local pg_port=$((5400 + offset))
     local es_port=$((9201 + offset))
+    # Btrfs: solo activar si está explícitamente configurado en el .env del main.
+    # Sin configuración explícita no activar aunque /mnt/docker-btrfs exista en el host.
     local btrfs_root btrfs_base btrfs_envs use_btrfs_snapshots env_data_root
-    btrfs_root="$(read_env_value BTRFS_ROOT "${env_file}")"; btrfs_root="${btrfs_root:-/mnt/docker-btrfs}"
-    btrfs_base="$(read_env_value BTRFS_BASE "${env_file}")"; btrfs_base="${btrfs_base:-${btrfs_root}/base}"
-    btrfs_envs="$(read_env_value BTRFS_ENVS "${env_file}")"; btrfs_envs="${btrfs_envs:-${btrfs_root}/envs}"
-    use_btrfs_snapshots="$(read_env_value USE_BTRFS_SNAPSHOTS "${env_file}")"; use_btrfs_snapshots="${use_btrfs_snapshots:-auto}"
-    if [ -d "${btrfs_root}" ] && [ -d "${btrfs_base}" ] && [ -d "${btrfs_envs}" ] && [ "${use_btrfs_snapshots}" != "false" ]; then
-        env_data_root="${btrfs_envs}/${wt_name}"
+    btrfs_root="$(read_env_value BTRFS_ROOT "${env_file}")"
+    use_btrfs_snapshots="$(read_env_value USE_BTRFS_SNAPSHOTS "${env_file}")"
+    if [ -n "${btrfs_root}" ] && [ -n "${use_btrfs_snapshots}" ] && [ "${use_btrfs_snapshots}" != "false" ]; then
+        btrfs_base="$(read_env_value BTRFS_BASE "${env_file}")"; btrfs_base="${btrfs_base:-${btrfs_root}/base}"
+        btrfs_envs="$(read_env_value BTRFS_ENVS "${env_file}")"; btrfs_envs="${btrfs_envs:-${btrfs_root}/envs}"
+        if [ -d "${btrfs_root}" ] && [ -d "${btrfs_base}" ] && [ -d "${btrfs_envs}" ]; then
+            env_data_root="${btrfs_envs}/${wt_name}"
+        else
+            env_data_root="${DOCKER_DIR}/data/envs/${wt_name}"
+        fi
     else
         env_data_root="${DOCKER_DIR}/data/envs/${wt_name}"
     fi
@@ -745,7 +751,7 @@ cmd_worktree_env() {
     upsert_env_value POSTGRES_PORT "${pg_port}" "${env_file}"
     upsert_env_value ES_HTTP_PORT "${es_port}" "${env_file}"
     upsert_env_value ENV_DATA_ROOT "${env_data_root}" "${env_file}"
-    if [ -d "${btrfs_root}" ]; then
+    if [ -n "${btrfs_root}" ] && [ -n "${use_btrfs_snapshots}" ] && [ "${use_btrfs_snapshots}" != "false" ]; then
         upsert_env_value BTRFS_ROOT "${btrfs_root}" "${env_file}"
         upsert_env_value BTRFS_BASE "${btrfs_base}" "${env_file}"
         upsert_env_value BTRFS_ENVS "${btrfs_envs}" "${env_file}"
