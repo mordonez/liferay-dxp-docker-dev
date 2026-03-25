@@ -19,6 +19,8 @@ includes:
     taskfile: ./Taskfile.env.yml
   worktree:
     taskfile: ./Taskfile.worktree.yml
+  ai:
+    taskfile: ./Taskfile.ai.yml
 
 tasks:
   project:init:
@@ -64,6 +66,7 @@ tasks:
           env:       Ciclo de vida del entorno Docker (start, stop, logs, init)
           worktree:  Aislamiento por worktree (new, start, rm, gc, btrfs-setup)
           liferay:   CLI headless API (inventory, resource sync, page-layout)
+          ai:        Skills e infraestructura AI/LLM (install, update)
 
         Primeros pasos:
           task env:start              Arrancar el entorno

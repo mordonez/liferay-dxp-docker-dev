@@ -1,0 +1,14 @@
+# https://taskfile.dev
+# Namespace: ai — Gestión de skills e infraestructura AI/LLM para proyectos Liferay
+version: '3'
+
+tasks:
+  install:
+    desc: "Instalar AI/Skills en proyecto nuevo. Ej: task ai:install -- --target ~/projects/mi-proyecto [--force]"
+    cmds:
+      - bash {{.ROOT_DIR}}/tools/ai/install.sh {{.CLI_ARGS}}
+
+  update:
+    desc: "Actualizar SOLO skills del vendor (seguro: conserva CLAUDE.md y skills locales del proyecto). Ej: task ai:update -- --target ~/projects/mi-proyecto"
+    cmds:
+      - bash {{.ROOT_DIR}}/tools/ai/install.sh --skills-only {{.CLI_ARGS}}
