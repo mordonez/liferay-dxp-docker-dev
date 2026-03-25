@@ -725,8 +725,13 @@ cmd_worktree_env() {
         env_data_root="${DOCKER_DIR}/data/envs/${wt_name}"
     fi
 
+    # Leer COMPOSE_PROJECT_NAME siempre del main para evitar que re-ejecuciones
+    # de cmd_worktree_env dupliquen el sufijo (liferay-test2 → liferay-test2-test2).
     local main_compose_project
-    main_compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${env_file}")"
+    local main_env_for_project="${main_root}/docker/.env"
+    if [ -f "${main_env_for_project}" ]; then
+        main_compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${main_env_for_project}")"
+    fi
     main_compose_project="${main_compose_project:-liferay}"
 
     upsert_env_value BIND_IP "${bind_ip}" "${env_file}"
