@@ -76,7 +76,7 @@ public class InventoryCommand implements Callable<Integer> {
                 LiferayCLIMain.RootCommand root = parent.root;
                 OAuthTokenClient.TokenResponse token = root.tokenClient().fetchClientCredentialsToken(root.settings());
                 long siteId = resolveSiteId(root, token, site);
-                
+
                 String basePath = "/o/headless-delivery/v1.0/sites/" + siteId + "/structured-contents?flatten=true";
                 if (structureId != null) {
                     String filter = URLEncoder.encode("contentStructureId eq " + structureId, StandardCharsets.UTF_8);
@@ -761,16 +761,16 @@ public class InventoryCommand implements Callable<Integer> {
                             structureSiteId = dataDefinition.path("siteId").asLong(-1L);
                         }
                     }
-                        
+
                     if (structureName.isEmpty() && structure != null) {
                         structureName = structure.path("name").asText("");
                     }
-                    
+
                     // Fallback: if structureSiteId is still missing, try using the article's groupId
                     if (structureSiteId <= 0) {
                          structureSiteId = siteContext.groupId();
                     }
-                    
+
                     if (verbose) {
                          articleNode.put("structureSiteId", structureSiteId);
                     }
@@ -1982,7 +1982,7 @@ public class InventoryCommand implements Callable<Integer> {
                             String subtype = item.path("displayPageTemplateSettings")
                                 .path("contentAssociation")
                                 .path("contentSubtype").asText("");
-                            
+
                             boolean matchName = !structureName.isEmpty() && structureName.equalsIgnoreCase(subtype);
                             boolean matchKey = !structureKey.isEmpty() && structureKey.equalsIgnoreCase(subtype);
 
@@ -2269,7 +2269,7 @@ public class InventoryCommand implements Callable<Integer> {
         }
 
         private static String controlPanelBase(String baseUrl, String siteSlug, String portletId) {
-            return baseUrl + "/ca/group/" + siteSlug + "/~/control_panel/manage" +
+            return baseUrl + "/group/" + siteSlug + "/~/control_panel/manage" +
                 "?p_p_id=" + portletId + "&p_p_lifecycle=0&p_p_state=maximized";
         }
 
