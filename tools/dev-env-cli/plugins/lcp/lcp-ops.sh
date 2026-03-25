@@ -345,10 +345,8 @@ cmd_doclib_mount() {
         return 0
     fi
 
-    # No path or NAS configured — ensure volume is a plain empty volume (no stale bind mount)
-    recreate_docker_volume "${volume}"
-    docker volume create "${volume}" >/dev/null
-    echo "Doclib volume ${volume} listo (sin import de path externo)"
+    # Sin path ni NAS: ensure_doclib_volume ya creó el volumen bind-device correcto.
+    echo "Doclib volume ${volume} listo"
 }
 
 cmd_doclib_download_bg() {
