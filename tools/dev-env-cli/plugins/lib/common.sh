@@ -105,7 +105,12 @@ configured_btrfs_root_for_docker_dir() {
         return 0
     fi
 
-    if [ -d "/mnt/docker-btrfs/base" ] && [ -d "/mnt/docker-btrfs/envs" ]; then
+    # Auto-detección solo si USE_BTRFS_SNAPSHOTS está explícitamente configurado.
+    # Sin configuración explícita no activar Btrfs aunque el directorio exista en el host.
+    local use_btrfs
+    use_btrfs="$(read_env_value USE_BTRFS_SNAPSHOTS "${env_file}")"
+    if [ -n "${use_btrfs}" ] && [ "${use_btrfs}" != "false" ] \
+        && [ -d "/mnt/docker-btrfs/base" ] && [ -d "/mnt/docker-btrfs/envs" ]; then
         printf '%s\n' "/mnt/docker-btrfs"
     fi
 }
