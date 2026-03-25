@@ -5,6 +5,9 @@
 docker/.env
 docker/.env.bak.*
 docker/data/
+docker/backups/
+docker/dumps/*.hprof
+docker/dumps/thread_dumps/
 
 # Liferay build artifacts
 liferay/build/

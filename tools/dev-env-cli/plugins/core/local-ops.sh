@@ -725,11 +725,15 @@ cmd_worktree_env() {
         env_data_root="${DOCKER_DIR}/data/envs/${wt_name}"
     fi
 
+    local main_compose_project
+    main_compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${env_file}")"
+    main_compose_project="${main_compose_project:-liferay}"
+
     upsert_env_value BIND_IP "${bind_ip}" "${env_file}"
     upsert_env_value LIFERAY_CLI_URL "http://${bind_ip}:${http_port}" "${env_file}"
-    upsert_env_value COMPOSE_PROJECT_NAME "labweb-${wt_name}" "${env_file}"
-    upsert_env_value VOLUME_PREFIX "labweb-${wt_name}" "${env_file}"
-    upsert_env_value DOCLIB_VOLUME_NAME "labweb-${wt_name}-doclib" "${env_file}"
+    upsert_env_value COMPOSE_PROJECT_NAME "${main_compose_project}-${wt_name}" "${env_file}"
+    upsert_env_value VOLUME_PREFIX "${main_compose_project}-${wt_name}" "${env_file}"
+    upsert_env_value DOCLIB_VOLUME_NAME "${main_compose_project}-${wt_name}-doclib" "${env_file}"
     upsert_env_value LIFERAY_HTTP_PORT "${http_port}" "${env_file}"
     upsert_env_value LIFERAY_DEBUG_PORT "${debug_port}" "${env_file}"
     upsert_env_value GOGO_PORT "${gogo_port}" "${env_file}"
@@ -835,7 +839,7 @@ cmd_worktree_deploy_cache_update() {
     fi
     env_data_root="$(resolve_path_from_env_file "${env_data_root}" "${env_file}")"
     compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${env_file}")"
-    compose_project="${compose_project:-labweb}"
+    compose_project="${compose_project:-liferay}"
     if docker ps --format '{{.Names}}' | grep -q "^${compose_project}-liferay$"; then
         echo "[WARN] Se recomienda ejecutar con entorno parado para evitar auto-deploy durante el copiado." >&2
         echo "[WARN] Flujo recomendado: task stop && task deploy:prepare && task worktree-deploy-cache-update --clean && task start" >&2
@@ -1019,11 +1023,14 @@ cmd_worktree_clean() {
     local wt_docker_dir="${wt_dir}/docker"
     local wt_env_file="${wt_docker_dir}/.env"
     local branch="fix/${name}"
-    local compose_project="labweb-${name}"
+    local main_compose_project
+    main_compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${main_root}/docker/.env" 2>/dev/null || true)"
+    main_compose_project="${main_compose_project:-liferay}"
+    local compose_project="${main_compose_project}-${name}"
     local doclib_volume=""
     if [ -f "${wt_env_file}" ]; then
         compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${wt_env_file}")"
-        compose_project="${compose_project:-labweb-${name}}"
+        compose_project="${compose_project:-${main_compose_project}-${name}}"
         doclib_volume="$(read_env_value DOCLIB_VOLUME_NAME "${wt_env_file}")"
     fi
 
@@ -1108,7 +1115,7 @@ cmd_worktree_clean() {
         delete_tree_with_helper "${env_data_root}" || true
     fi
     remove_btrfs_env_dir "${name}" || exit 1
-    for volume_name in "${doclib_volume}" "${compose_project}-doclib" "labweb-${name}-doclib"; do
+    for volume_name in "${doclib_volume}" "${compose_project}-doclib" "${main_compose_project}-${name}-doclib"; do
         [ -n "${volume_name}" ] || continue
         docker volume rm "${volume_name}" >/dev/null 2>&1 || true
     done
@@ -1132,6 +1139,9 @@ cmd_worktree_gc() {
     done
     local main_root
     main_root="$(main_repo_root)"
+    local main_compose_project
+    main_compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${main_root}/docker/.env" 2>/dev/null || true)"
+    main_compose_project="${main_compose_project:-liferay}"
     local current_wt
     current_wt="$(current_worktree_name)"
     local cutoff
@@ -1151,7 +1161,7 @@ cmd_worktree_gc() {
             if [ -n "${current_wt}" ] && [ "${base}" = "${current_wt}" ]; then
                 continue
             fi
-            if docker ps --format '{{.Names}}' | grep -q "^labweb-${base}-"; then
+            if docker ps --format '{{.Names}}' | grep -q "^${main_compose_project}-${base}-"; then
                 continue
             fi
             mtime="$(file_mtime "${dir}")"
@@ -1169,7 +1179,7 @@ cmd_worktree_gc() {
             if [ -n "${current_wt}" ] && [ "${base}" = "${current_wt}" ]; then
                 continue
             fi
-            if docker ps --format '{{.Names}}' | grep -q "^labweb-${base}-"; then
+            if docker ps --format '{{.Names}}' | grep -q "^${main_compose_project}-${base}-"; then
                 continue
             fi
             mtime="$(file_mtime "${dir}")"

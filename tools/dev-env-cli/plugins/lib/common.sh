@@ -359,7 +359,7 @@ ensure_doclib_volume() {
     if [ -z "${volume}" ]; then
         local compose_project
         compose_project="$(read_env_value COMPOSE_PROJECT_NAME "${env_file}")"
-        volume="${compose_project:-labweb}-doclib"
+        volume="${compose_project:-liferay}-doclib"
         upsert_env_value DOCLIB_VOLUME_NAME "${volume}" "${env_file}"
     fi
     docker volume create "${volume}" >/dev/null

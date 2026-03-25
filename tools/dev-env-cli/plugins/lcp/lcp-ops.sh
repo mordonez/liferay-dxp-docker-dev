@@ -13,7 +13,7 @@ source "${LIB_DIR}/common.sh"
 REPO_ROOT="${REPO_ROOT:-${_PLUGIN_REPO_ROOT}}"
 DOCKER_DIR="${LOCAL_OPS_DOCKER_DIR:-${REPO_ROOT}/docker}"
 DOCKER_DIR="$(cd "${DOCKER_DIR}" && pwd)"
-DEFAULT_LCP_PROJECT="labweb"
+DEFAULT_LCP_PROJECT="my-lcp-project"
 DEFAULT_LCP_ENVIRONMENT="prd"
 
 usage() {
