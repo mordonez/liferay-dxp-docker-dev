@@ -105,6 +105,37 @@ el script avisa con un `WARNING` pero el portal arranca igualmente en modo trial
 
 ---
 
+## Worktrees con Btrfs (opcional, Linux)
+
+Para clonar entornos de worktree de forma instantánea (snapshots COW en lugar
+de copias de varios GB), configura el soporte Btrfs una sola vez:
+
+```bash
+# 1. Prerequisito: sudo sin contraseña para comandos btrfs y mount
+sudo visudo -f /etc/sudoers.d/worktree-btrfs
+# Añadir (una línea):
+# mordonez ALL=(root) NOPASSWD: /usr/bin/btrfs subvolume snapshot *, /usr/bin/btrfs subvolume create *, /usr/bin/btrfs subvolume delete *, /usr/bin/btrfs subvolume show *, /usr/bin/mount *
+
+# 2. Setup (migra datos actuales, crea snapshots, actualiza .env automáticamente)
+task env:stop
+task worktree:btrfs-setup -- --apply --confirm-token BTRFS
+
+# 3. Arrancar main desde el nuevo data root Btrfs
+task env:start
+```
+
+A partir de aquí los worktrees clonan en milisegundos:
+
+```bash
+task worktree:new -- issue-123
+cd .worktrees/issue-123 && task env:start
+```
+
+Consulta `docker/README-btrfs-worktree.md` para el flujo completo, opciones
+de tamaño, refresco de base y troubleshooting.
+
+---
+
 ## Mantener el vendor actualizado
 
 ```bash
