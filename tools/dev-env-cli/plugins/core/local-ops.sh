@@ -1031,6 +1031,13 @@ cmd_btrfs_setup() {
         sudo -n /usr/bin/btrfs subvolume snapshot "${mount_point}/base/${subdir}" "${mount_point}/main/${subdir}"
         echo "  - ${subdir} OK"
     done
+    # Escribir vars Btrfs en .env para que el tooling las use automáticamente.
+    echo "[INFO] Actualizando .env con configuración Btrfs..."
+    upsert_env_value BTRFS_ROOT "${mount_point}" "${env_file}"
+    upsert_env_value BTRFS_BASE "${mount_point}/base" "${env_file}"
+    upsert_env_value BTRFS_ENVS "${mount_point}/envs" "${env_file}"
+    upsert_env_value USE_BTRFS_SNAPSHOTS "auto" "${env_file}"
+    upsert_env_value ENV_DATA_ROOT "${mount_point}/main" "${env_file}"
     echo "[INFO] btrfs-setup completado en ${mount_point}"
 }
 
