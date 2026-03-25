@@ -6,7 +6,7 @@ run_ub() {
     # Resolver ruta de liferay-cli relativa a este script (funciona tanto en vendor como en proyecto directo)
     local _SCRIPT_DIR
     _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    local _LIFERAY_CLI_DIR="${_SCRIPT_DIR}/../../liferay-cli"
+    local _LIFERAY_CLI_DIR="${_SCRIPT_DIR}/../../../liferay-cli"
     local ub_jar="${_LIFERAY_CLI_DIR}/build/libs/liferay-cli-all.jar"
     local ub_lock="${REPO_ROOT}/.tmp/dev-cli-ub.lock"
     local ub_lock_wait_seconds="${UB_LOCK_WAIT_SECONDS:-5}"
