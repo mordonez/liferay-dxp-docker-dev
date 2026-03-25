@@ -716,7 +716,7 @@ cmd_worktree_env() {
     local es_port=$((9201 + offset))
     # Btrfs: solo activar si está explícitamente configurado en el .env del main.
     # Sin configuración explícita no activar aunque /mnt/docker-btrfs exista en el host.
-    local btrfs_root btrfs_base btrfs_envs use_btrfs_snapshots env_data_root
+    local btrfs_root="" btrfs_base="" btrfs_envs="" use_btrfs_snapshots="" env_data_root=""
     btrfs_root="$(read_env_value BTRFS_ROOT "${env_file}")"
     use_btrfs_snapshots="$(read_env_value USE_BTRFS_SNAPSHOTS "${env_file}")"
     if [ -n "${btrfs_root}" ] && [ -n "${use_btrfs_snapshots}" ] && [ "${use_btrfs_snapshots}" != "false" ]; then
