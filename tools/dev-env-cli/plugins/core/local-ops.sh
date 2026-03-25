@@ -1020,17 +1020,18 @@ cmd_btrfs_setup() {
         echo "[INFO] Migración de datos completada"
     fi
 
-    # Snapshot base/ → main/ para que main arranque desde el estado base.
-    # Si main/<subdir> ya existe como subvolumen vacío, se elimina antes de crear el snapshot.
-    echo "[INFO] Inicializando main desde base (snapshots COW)..."
-    for subdir in postgres-data liferay-data liferay-osgi-state elasticsearch-data liferay-deploy-cache liferay-doclib; do
-        [ -d "${mount_point}/base/${subdir}" ] || continue
-        if sudo -n /usr/bin/btrfs subvolume show "${mount_point}/main/${subdir}" >/dev/null 2>&1; then
-            sudo -n /usr/bin/btrfs subvolume delete "${mount_point}/main/${subdir}" >/dev/null
-        fi
-        sudo -n /usr/bin/btrfs subvolume snapshot "${mount_point}/base/${subdir}" "${mount_point}/main/${subdir}"
-        echo "  - ${subdir} OK"
-    done
+    # Snapshot base/ → main/ solo en setup inicial (no en --force-migration donde main ya tiene datos).
+    if [ "${force_migration}" -eq 0 ]; then
+        echo "[INFO] Inicializando main desde base (snapshots COW)..."
+        for subdir in postgres-data liferay-data liferay-osgi-state elasticsearch-data liferay-deploy-cache liferay-doclib; do
+            [ -d "${mount_point}/base/${subdir}" ] || continue
+            if sudo -n /usr/bin/btrfs subvolume show "${mount_point}/main/${subdir}" >/dev/null 2>&1; then
+                sudo -n /usr/bin/btrfs subvolume delete "${mount_point}/main/${subdir}" >/dev/null
+            fi
+            sudo -n /usr/bin/btrfs subvolume snapshot "${mount_point}/base/${subdir}" "${mount_point}/main/${subdir}"
+            echo "  - ${subdir} OK"
+        done
+    fi
     # Escribir vars Btrfs en .env para que el tooling las use automáticamente.
     echo "[INFO] Actualizando .env con configuración Btrfs..."
     upsert_env_value BTRFS_ROOT "${mount_point}" "${env_file}"
