@@ -299,7 +299,7 @@ clone_env_data_root_btrfs() {
     fi
     mkdir -p "${dst_root}"
     local copied=0
-    for subdir in postgres-data liferay-data liferay-osgi-state liferay-deploy-cache elasticsearch-data; do
+    for subdir in postgres-data liferay-data liferay-osgi-state liferay-deploy-cache elasticsearch-data liferay-doclib; do
         if [ "${subdir}" = "liferay-deploy-cache" ] && [ "${clone_deploy_cache}" != "1" ]; then
             continue
         fi
@@ -744,12 +744,17 @@ cmd_worktree_env() {
     upsert_env_value LIFERAY_CLI_URL "http://${bind_ip}:${http_port}" "${env_file}"
     upsert_env_value COMPOSE_PROJECT_NAME "${main_compose_project}-${wt_name}" "${env_file}"
     upsert_env_value VOLUME_PREFIX "${main_compose_project}-${wt_name}" "${env_file}"
-    # Compartir el volumen doclib de main: los assets binarios (imágenes, documentos)
-    # no necesitan aislamiento por worktree — la BD clonada referencia los mismos archivos.
-    local main_doclib_volume
-    main_doclib_volume="$(read_env_value DOCLIB_VOLUME_NAME "${main_root}/docker/.env")"
-    main_doclib_volume="${main_doclib_volume:-${main_compose_project}-doclib}"
-    upsert_env_value DOCLIB_VOLUME_NAME "${main_doclib_volume}" "${env_file}"
+    # Doclib: estrategia según disponibilidad de Btrfs.
+    # - Con Btrfs: volumen per-worktree (snapshot COW = instantáneo, solo difiere lo nuevo).
+    # - Sin Btrfs: compartir doclib de main (evita copias de varios GBs por worktree).
+    if [ -n "${btrfs_root}" ] && [ -n "${use_btrfs_snapshots}" ] && [ "${use_btrfs_snapshots}" != "false" ]; then
+        upsert_env_value DOCLIB_VOLUME_NAME "${main_compose_project}-${wt_name}-doclib" "${env_file}"
+    else
+        local main_doclib_volume
+        main_doclib_volume="$(read_env_value DOCLIB_VOLUME_NAME "${main_root}/docker/.env")"
+        main_doclib_volume="${main_doclib_volume:-${main_compose_project}-doclib}"
+        upsert_env_value DOCLIB_VOLUME_NAME "${main_doclib_volume}" "${env_file}"
+    fi
     upsert_env_value LIFERAY_HTTP_PORT "${http_port}" "${env_file}"
     upsert_env_value LIFERAY_DEBUG_PORT "${debug_port}" "${env_file}"
     upsert_env_value GOGO_PORT "${gogo_port}" "${env_file}"

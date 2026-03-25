@@ -367,7 +367,32 @@ ensure_doclib_volume() {
         volume="${compose_project:-liferay}-doclib"
         upsert_env_value DOCLIB_VOLUME_NAME "${volume}" "${env_file}"
     fi
-    docker volume create "${volume}" >/dev/null
+
+    # Si ya es CIFS/NAS, no tocar.
+    local existing_type=""
+    existing_type="$(docker volume inspect "${volume}" --format '{{index .Options "type"}}' 2>/dev/null || true)"
+    if [ "${existing_type}" = "cifs" ]; then
+        printf '%s\n' "${volume}"
+        return 0
+    fi
+
+    # Crear (o recrear si era plain) como bind-device apuntando a ENV_DATA_ROOT/liferay-doclib.
+    # Así los datos persisten entre reinicios y se clonan con el resto del entorno en worktrees Btrfs.
+    local doclib_dir
+    doclib_dir="$(resolve_env_data_root_for_docker_dir "${DOCKER_DIR}")/liferay-doclib"
+    mkdir -p "${doclib_dir}"
+    # Solo recrear si el volumen no apunta ya al directorio correcto
+    local existing_device=""
+    existing_device="$(docker volume inspect "${volume}" --format '{{index .Options "device"}}' 2>/dev/null || true)"
+    if [ "${existing_device}" != "$(realpath "${doclib_dir}")" ]; then
+        docker volume rm "${volume}" >/dev/null 2>&1 || true
+        docker volume create \
+            --driver local \
+            --opt type=none \
+            --opt "device=$(realpath "${doclib_dir}")" \
+            --opt o=bind \
+            "${volume}" >/dev/null
+    fi
     printf '%s\n' "${volume}"
 }
 
