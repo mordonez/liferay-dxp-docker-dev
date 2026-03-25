@@ -51,7 +51,7 @@ public class ThemeCommand implements Callable<Integer> {
                     .connectTimeout(Duration.ofSeconds(root.settings().timeoutSeconds()))
                     .build();
 
-                String themeName = root.settings().paths().getOrDefault("theme", "ub-theme");
+                String themeName = root.settings().paths().getOrDefault("theme", "custom-theme");
                 String mainCssUrl = baseUrl + "/o/" + themeName + "/css/main.css";
                 String adminIconsUrl = baseUrl + "/o/admin-theme/images/clay/icons.svg";
                 String ubIconsUrl = baseUrl + "/o/" + themeName + "/images/clay/icons.svg";

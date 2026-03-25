@@ -3963,7 +3963,7 @@ final class ResourceSyncCommands {
         boolean exportMode
     ) {
         if (isBlank(dirOpt)) {
-            String fragmentsDir = root.settings().paths().getOrDefault("fragments", "liferay/ub-fragments");
+            String fragmentsDir = root.settings().paths().getOrDefault("fragments", "liferay/fragments");
             return repoRoot(root).resolve(fragmentsDir + "/sites").resolve(siteToken).normalize();
         }
         Path configured = Path.of(dirOpt);
@@ -3977,7 +3977,7 @@ final class ResourceSyncCommands {
     }
 
     private static void ensureFragmentProjectScaffold(LiferayCLIMain.RootCommand root, Path projectDir) throws Exception {
-        String fragmentsDir = root.settings().paths().getOrDefault("fragments", "liferay/ub-fragments");
+        String fragmentsDir = root.settings().paths().getOrDefault("fragments", "liferay/fragments");
         Path base = repoRoot(root).resolve(fragmentsDir);
         Files.createDirectories(projectDir.resolve("src"));
         List<String> seeds = List.of(
