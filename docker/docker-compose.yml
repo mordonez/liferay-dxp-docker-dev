@@ -1,6 +1,6 @@
 services:
   liferay:
-    image: ${LIFERAY_IMAGE:-liferay/dxp:2026.q1.0-lts}
+    image: ${LIFERAY_IMAGE:-liferay/dxp:2025.q1.0-lts}
     container_name: ${COMPOSE_PROJECT_NAME:-liferay}-liferay
     restart: unless-stopped
     stop_grace_period: 120s
@@ -50,7 +50,7 @@ services:
     build:
       context: ./elasticsearch
       dockerfile: Dockerfile
-    image: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch:8.17.4
+    image: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch:7.17.26
     container_name: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch
     restart: unless-stopped
     environment:

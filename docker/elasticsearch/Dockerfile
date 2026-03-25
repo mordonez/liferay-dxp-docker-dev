@@ -1,4 +1,4 @@
-FROM elasticsearch:8.17.4
+FROM elasticsearch:7.17.26
 
 # Plugins requeridos por Liferay DXP para análisis multilingüe
 # Mismos plugins que incluye el sidecar embebido de Liferay
