@@ -52,11 +52,16 @@ run_prepare_build() {
         (cd "${REPO_ROOT}/liferay" && ./gradlew --console=plain buildService -q) || { echo "[ERROR] buildService falló (FORCE_PREPARE)" >&2; return 1; }
         (cd "${REPO_ROOT}" && git ls-files liferay/modules | grep 'service\.properties$' | xargs git checkout -- 2>/dev/null || true)
     elif ! find "${REPO_ROOT}/liferay/modules" -maxdepth 5 -path "*/build/libs/*.jar" | grep -q .; then
-        # Clone fresco: no hay JARs compilados en modules/*/build/libs/ → buildService necesario
-        echo "Clone fresco detectado -> generando Service Builder y compilando"
-        (cd "${REPO_ROOT}/liferay" && ./gradlew --console=plain buildService -q) || { echo "[ERROR] buildService falló" >&2; return 1; }
-        # buildService regenera service.properties con build.number/build.date nuevo — restaurar para no generar ruido en git
-        (cd "${REPO_ROOT}" && git ls-files liferay/modules | grep 'service\.properties$' | xargs git checkout -- 2>/dev/null || true)
+        # Clone fresco sin JARs compilados. Ejecutar buildService solo si existen módulos
+        # con service.xml (Service Builder). Sin ellos la tarea no existe y fallaría.
+        if find "${REPO_ROOT}/liferay/modules" -maxdepth 5 -name "service.xml" | grep -q .; then
+            echo "Clone fresco detectado -> generando Service Builder y compilando"
+            (cd "${REPO_ROOT}/liferay" && ./gradlew --console=plain buildService -q) || { echo "[ERROR] buildService falló" >&2; return 1; }
+            # buildService regenera service.properties con build.number/build.date nuevo — restaurar para no generar ruido en git
+            (cd "${REPO_ROOT}" && git ls-files liferay/modules | grep 'service\.properties$' | xargs git checkout -- 2>/dev/null || true)
+        else
+            echo "Clone fresco detectado -> sin módulos Service Builder, compilando directamente"
+        fi
     fi
     # dockerDeploy es incremental: solo re-copia JARs ausentes en build/docker/deploy/
     # (Liferay los consume al desplegar, por lo que siempre hay que repoblar el directorio)
