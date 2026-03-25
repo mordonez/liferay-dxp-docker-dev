@@ -907,7 +907,7 @@ cmd_worktree_deploy_cache_update() {
 cmd_btrfs_setup() {
     local apply=0
     local confirm=""
-    local size_gb="200"
+    local size_gb="50"
     local mount_point="${DOCKER_DIR}/data"
     local loop_file="${DOCKER_DIR}/data/.btrfs-loop.img"
     local mount_opts="loop,compress=zstd,noatime,user_subvol_rm_allowed"
