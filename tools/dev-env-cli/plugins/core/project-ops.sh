@@ -4,7 +4,7 @@
 set -euo pipefail
 
 SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VENDOR_ROOT="$(cd "${SELF_DIR}/../../../../.." && pwd)"   # raíz de liferay-dxp-docker-dev
+VENDOR_ROOT="$(cd "${SELF_DIR}/../../../.." && pwd)"   # raíz de liferay-dxp-docker-dev
 SCAFFOLD_DIR="${VENDOR_ROOT}/scaffold"
 
 # URL remota de este repo (para añadirla como remote en el proyecto destino)
@@ -150,11 +150,13 @@ cmd_init() {
     copy_liferay_scaffold "${dir}"
     copy_scaffold_files "${dir}"
     copy_oauth2_module "${dir}"
-    add_vendor_subtree "${dir}"
 
+    # Commit inicial necesario antes de git subtree add (requiere HEAD y working tree limpio)
     cd "${dir}"
     git add -A
-    git commit -m "chore: proyecto Liferay inicializado con liferay-dxp-docker-dev" || true
+    git commit -m "chore: scaffold inicial del proyecto Liferay"
+
+    add_vendor_subtree "${dir}"
 
     print_next_steps "${dir}"
 }
@@ -175,11 +177,12 @@ cmd_add() {
     echo "[INFO] Añadiendo tooling a ${target}..."
     copy_scaffold_files "${target}"
     copy_oauth2_module "${target}"
-    add_vendor_subtree "${target}"
 
     cd "${target}"
     git add -A
-    git commit -m "chore: integrar liferay-dxp-docker-dev como vendor" || true
+    git diff --cached --quiet || git commit -m "chore: añadir ficheros de configuración del tooling"
+
+    add_vendor_subtree "${target}"
 
     print_next_steps "${target}"
 }
@@ -202,11 +205,12 @@ cmd_add_community() {
     copy_liferay_scaffold "${target}"
     copy_scaffold_files "${target}"
     copy_oauth2_module "${target}"
-    add_vendor_subtree "${target}"
 
     cd "${target}"
     git add -A
-    git commit -m "chore: integrar liferay-dxp-docker-dev como vendor (Community)" || true
+    git diff --cached --quiet || git commit -m "chore: añadir scaffold y ficheros de configuración del tooling"
+
+    add_vendor_subtree "${target}"
 
     print_next_steps "${target}"
 }
