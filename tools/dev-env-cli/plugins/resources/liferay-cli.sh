@@ -3,7 +3,11 @@
 # Variables requeridas: REPO_ROOT
 
 run_ub() {
-    local ub_jar="${REPO_ROOT}/tools/liferay-cli/build/libs/liferay-cli-all.jar"
+    # Resolver ruta de liferay-cli relativa a este script (funciona tanto en vendor como en proyecto directo)
+    local _SCRIPT_DIR
+    _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local _LIFERAY_CLI_DIR="${_SCRIPT_DIR}/../../liferay-cli"
+    local ub_jar="${_LIFERAY_CLI_DIR}/build/libs/liferay-cli-all.jar"
     local ub_lock="${REPO_ROOT}/.tmp/dev-cli-ub.lock"
     local ub_lock_wait_seconds="${UB_LOCK_WAIT_SECONDS:-5}"
     local skip_build="${UB_SKIP_BUILD:-auto}"
@@ -89,14 +93,14 @@ run_ub() {
         if [ "${skip_build}" = "auto" ]; then
             if [ ! -f "${ub_jar}" ]; then
                 should_build="1"
-            elif find ../tools/liferay-cli/src ../tools/liferay-cli/build.gradle ../tools/liferay-cli/settings.gradle -type f -newer "${ub_jar}" -print -quit 2>/dev/null | grep -q .; then
+            elif find "${_LIFERAY_CLI_DIR}/src" "${_LIFERAY_CLI_DIR}/build.gradle" "${_LIFERAY_CLI_DIR}/settings.gradle" -type f -newer "${ub_jar}" -print -quit 2>/dev/null | grep -q .; then
                 should_build="1"
             fi
         elif [ "${skip_build}" = "0" ]; then
             should_build="1"
         fi
         if [ "${should_build}" = "1" ]; then
-            ./gradlew -p ../tools/liferay-cli uberJar --console=plain 1>&2
+            ./gradlew -p "${_LIFERAY_CLI_DIR}" uberJar --console=plain 1>&2
         elif [ ! -f "${ub_jar}" ]; then
             echo "[ERROR] No se encuentra ${ub_jar}. Ejecuta sin UB_SKIP_BUILD=1 para compilar." >&2
             exit 1
