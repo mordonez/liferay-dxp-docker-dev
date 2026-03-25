@@ -12,6 +12,7 @@ liferay/configs/dockerenv/osgi/modules/activation-key-*.xml
 
 # Liferay build artifacts
 liferay/build/
+modules/build/tmp
 
 # liferay-cli JAR compilado
 tools/liferay-cli/build/
