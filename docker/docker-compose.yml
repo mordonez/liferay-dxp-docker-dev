@@ -11,8 +11,12 @@ services:
       LIFERAY_CONTAINER_STATUS_ENABLED: "true"
       LIFERAY_THREAD_DUMPS_DIRECTORY: "/opt/liferay/dumps/thread_dumps"
       LIFERAY_CLI_OAUTH2_ENABLED: ${LIFERAY_CLI_OAUTH2_ENABLED:-true}
-      LIFERAY_CLI_OAUTH2_COMPANY_WEB_ID: ${LIFERAY_CLI_OAUTH2_COMPANY_WEB_ID:-local.liferay.com}
-      LIFERAY_CLI_OAUTH2_ADMIN_EMAIL: ${LIFERAY_CLI_OAUTH2_ADMIN_EMAIL:-admin@liferay.com}
+      LIFERAY_CLI_OAUTH2_COMPANY_WEB_ID: ${LIFERAY_CLI_OAUTH2_COMPANY_WEB_ID:-liferay.local}
+      LIFERAY_CLI_OAUTH2_ADMIN_EMAIL: ${LIFERAY_CLI_OAUTH2_ADMIN_EMAIL:-admin@liferay.local}
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME: org.postgresql.Driver
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL: "jdbc:postgresql://postgres:5432/${POSTGRES_DB:-liferay}"
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME: "${POSTGRES_USER:-liferay}"
+      LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD: "${POSTGRES_PASSWORD:-liferay}"
     ports:
       - "${BIND_IP:-127.0.0.1}:${LIFERAY_HTTP_PORT:-8080}:8080"
       - "${BIND_IP:-127.0.0.1}:${LIFERAY_DEBUG_PORT:-8000}:8000"
@@ -45,7 +49,7 @@ services:
     build:
       context: ./elasticsearch
       dockerfile: Dockerfile
-    image: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch:7.17.26
+    image: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch:8.17.4
     container_name: ${COMPOSE_PROJECT_NAME:-liferay}-elasticsearch
     restart: unless-stopped
     environment:
