@@ -7,8 +7,10 @@
 # Todos los scripts del plugin deben usar _PLUGIN_REPO_ROOT en lugar de
 # calcular su propia profundidad (../../..) para evitar regresiones al reorganizar.
 _COMMON_SH_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# lib → plugins → dev-env-cli → tools → repo root  (4 niveles)
-_PLUGIN_REPO_ROOT="$(cd "${_COMMON_SH_DIR}/../../../.." && pwd)"
+# Cuando el vendor está en vendor/liferay-tooling/, los 4 niveles apuntan al vendor,
+# no al repo del proyecto. Usar REPO_ROOT (exportado por Taskfile.yml) como fuente
+# canónica; el cálculo relativo queda como fallback para ejecución directa en tests.
+_PLUGIN_REPO_ROOT="${REPO_ROOT:-$(cd "${_COMMON_SH_DIR}/../../../.." && pwd)}"
 
 # Obtiene mtime en segundos epoch — portable entre GNU stat (-c %Y) y BSD stat (-f %m)
 file_mtime() {
