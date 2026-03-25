@@ -46,17 +46,12 @@ ensure_main_env_layout() {
     is_linux_host || return 0
     btrfs_layout_ready_for_docker_dir "${DOCKER_DIR}" || return 0
 
-    local btrfs_root main_env_root
-    btrfs_root="$(configured_btrfs_root_for_docker_dir "${DOCKER_DIR}")"
+    # No escribir vars btrfs ni ENV_DATA_ROOT automáticamente.
+    # El usuario debe configurarlas explícitamente en su .env si quiere usar btrfs.
+    # Consultar .env.example para los valores recomendados.
+    local main_env_root
     main_env_root="$(main_btrfs_data_root_for_docker_dir "${DOCKER_DIR}")"
-
-    upsert_env_value BTRFS_ROOT "${btrfs_root}" "${env_file}"
-    upsert_env_value BTRFS_BASE "${btrfs_root}/base" "${env_file}"
-    upsert_env_value BTRFS_ENVS "${btrfs_root}/envs" "${env_file}"
-    upsert_env_value USE_BTRFS_SNAPSHOTS "auto" "${env_file}"
-    upsert_env_value ENV_DATA_ROOT "${main_env_root}" "${env_file}"
-
-    ensure_host_dir_owned_by_current_user "${main_env_root}"
+    ensure_host_dir_owned_by_current_user "${main_env_root}" 2>/dev/null || true
 }
 
 ensure_repo_git_hooks_installed() {
