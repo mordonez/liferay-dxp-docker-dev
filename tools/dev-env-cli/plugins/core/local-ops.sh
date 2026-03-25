@@ -1031,6 +1031,8 @@ cmd_btrfs_setup() {
             echo "  - ${subdir} OK"
         done
     fi
+    # Traspasar propiedad de envs/ al usuario actual para que pueda crear directorios sin sudo.
+    sudo chown "${USER}:${USER}" "${mount_point}/envs"
     # Escribir vars Btrfs en .env para que el tooling las use automáticamente.
     echo "[INFO] Actualizando .env con configuración Btrfs..."
     upsert_env_value BTRFS_ROOT "${mount_point}" "${env_file}"
