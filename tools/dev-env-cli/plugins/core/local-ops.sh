@@ -744,7 +744,12 @@ cmd_worktree_env() {
     upsert_env_value LIFERAY_CLI_URL "http://${bind_ip}:${http_port}" "${env_file}"
     upsert_env_value COMPOSE_PROJECT_NAME "${main_compose_project}-${wt_name}" "${env_file}"
     upsert_env_value VOLUME_PREFIX "${main_compose_project}-${wt_name}" "${env_file}"
-    upsert_env_value DOCLIB_VOLUME_NAME "${main_compose_project}-${wt_name}-doclib" "${env_file}"
+    # Compartir el volumen doclib de main: los assets binarios (imágenes, documentos)
+    # no necesitan aislamiento por worktree — la BD clonada referencia los mismos archivos.
+    local main_doclib_volume
+    main_doclib_volume="$(read_env_value DOCLIB_VOLUME_NAME "${main_root}/docker/.env")"
+    main_doclib_volume="${main_doclib_volume:-${main_compose_project}-doclib}"
+    upsert_env_value DOCLIB_VOLUME_NAME "${main_doclib_volume}" "${env_file}"
     upsert_env_value LIFERAY_HTTP_PORT "${http_port}" "${env_file}"
     upsert_env_value LIFERAY_DEBUG_PORT "${debug_port}" "${env_file}"
     upsert_env_value GOGO_PORT "${gogo_port}" "${env_file}"
