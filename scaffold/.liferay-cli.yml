@@ -1,0 +1,14 @@
+liferay:
+  url: http://localhost:8080
+  oauth2:
+    # Dejar vacío — el módulo liferay-cli-bootstrap genera las credenciales al arrancar.
+    # Ejecuta 'task osgi:liferaycli-creds' para obtenerlas.
+    clientId: ""
+    clientSecret: ""
+    timeoutSeconds: 30
+paths:
+  theme: custom-theme        # Cambiar por el nombre de tu tema (carpeta en liferay/themes/)
+  structures: liferay/resources/journal/structures
+  templates: liferay/resources/journal/templates
+  fragments: liferay/fragments
+  adts: liferay/resources/templates/application_display

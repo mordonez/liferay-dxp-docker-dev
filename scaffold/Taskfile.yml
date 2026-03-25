@@ -1,0 +1,44 @@
+# https://taskfile.dev
+# Taskfile.yml — Generado por liferay-dxp-docker-dev
+# Ajusta: COMPOSE_PROJECT_NAME en docker/.env y paths.theme en .liferay-cli.yml
+version: '3'
+
+vars:
+  DOCKER_DIR:      '{{.ROOT_DIR}}/docker'
+  TOOLING_DIR:     '{{.ROOT_DIR}}/vendor/liferay-tooling'
+  DEV_ENV_CLI:     '{{.TOOLING_DIR}}/tools/dev-env-cli'
+  LOCAL_OPS_SH:    '{{.TOOLING_DIR}}/tools/dev-env-cli/plugins/core/local-ops.sh'
+  LCP_OPS_SH:      '{{.TOOLING_DIR}}/tools/dev-env-cli/plugins/lcp/lcp-ops.sh'
+  LIFERAY_CLI_DIR: '{{.TOOLING_DIR}}/tools/liferay-cli'
+  LIFERAY_CLI_JAR: '{{.LIFERAY_CLI_DIR}}/build/libs/liferay-cli-all.jar'
+
+env:
+  REPO_ROOT: '{{.ROOT_DIR}}'
+
+includes:
+  env:      { taskfile: ./vendor/liferay-tooling/Taskfile.env.yml }
+  worktree: { taskfile: ./vendor/liferay-tooling/Taskfile.worktree.yml }
+  db:       { taskfile: ./vendor/liferay-tooling/Taskfile.lcp.yml }
+  deploy:   { taskfile: ./vendor/liferay-tooling/Taskfile.deploy.yml }
+  osgi:     { taskfile: ./vendor/liferay-tooling/Taskfile.osgi.yml }
+  reindex:  { taskfile: ./vendor/liferay-tooling/Taskfile.reindex.yml }
+
+tasks:
+  liferay:
+    desc: "Ejecutar liferay-cli. Ej: task liferay -- inventory sites"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/resources/liferay-cli.sh {{.CLI_ARGS}}
+
+  tooling:sync:
+    desc: Actualizar vendor desde liferay-dxp-docker-dev
+    cmds:
+      - git subtree pull --prefix=vendor/liferay-tooling liferay-tooling main --squash
+
+  tooling:push:
+    desc: Publicar cambios al vendor
+    cmds:
+      - git subtree push --prefix=vendor/liferay-tooling liferay-tooling main
+
+  default:
+    cmds: [task --list --sort alpha]
+    silent: true

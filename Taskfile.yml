@@ -21,6 +21,21 @@ includes:
     taskfile: ./Taskfile.worktree.yml
 
 tasks:
+  project:init:
+    desc: "Crear nuevo proyecto Liferay con tooling. Ej: task project:init -- --name mi-proyecto --dir ~/projects/mi-proyecto"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/core/project-ops.sh init {{.CLI_ARGS}}
+
+  project:add:
+    desc: "Añadir tooling a proyecto existente con Docker. Ej: task project:add -- --target ~/projects/mi-proyecto"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/core/project-ops.sh add {{.CLI_ARGS}}
+
+  project:add-community:
+    desc: "Añadir tooling a proyecto con Liferay Community. Ej: task project:add-community -- --target ~/projects/mi-proyecto"
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/core/project-ops.sh add-community {{.CLI_ARGS}}
+
   liferay:
     desc: "Ejecutar liferay-cli (REQUERIDO: usar -- para argumentos). Ej: task liferay -- inventory sites"
     cmds:
