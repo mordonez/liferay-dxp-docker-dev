@@ -4,6 +4,7 @@ docker/data/
 docker/backups/
 docker/dumps/
 docker/patching/
+liferay/configs/dockerenv/osgi/modules/activation-key-*.xml
 .worktrees/
 
 # Build

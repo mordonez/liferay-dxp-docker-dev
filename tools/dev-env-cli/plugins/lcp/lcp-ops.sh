@@ -53,8 +53,8 @@ cmd_db_import() {
 
     local env_file="${DOCKER_DIR}/.env"
     local db_user db_name pg_data_dir
-    db_user="$(read_env_value POSTGRES_USER "${env_file}")"; db_user="${db_user:-ub}"
-    db_name="$(read_env_value POSTGRES_DB "${env_file}")"; db_name="${db_name:-ub}"
+    db_user="$(read_env_value POSTGRES_USER "${env_file}")"; db_user="${db_user:-liferay}"
+    db_name="$(read_env_value POSTGRES_DB "${env_file}")"; db_name="${db_name:-liferay}"
     pg_data_dir="$(resolve_env_data_root_for_docker_dir "${DOCKER_DIR}")/postgres-data"
 
     if [ -d "${pg_data_dir}" ] && [ -n "$(ls -A "${pg_data_dir}" 2>/dev/null)" ]; then

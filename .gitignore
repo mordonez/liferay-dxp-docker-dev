@@ -8,6 +8,7 @@ docker/data/
 docker/backups/
 docker/dumps/*.hprof
 docker/dumps/thread_dumps/
+liferay/configs/dockerenv/osgi/modules/activation-key-*.xml
 
 # Liferay build artifacts
 liferay/build/

@@ -148,8 +148,8 @@ fetch_oauth2_app_creds() {
     local docker_dir="${2:-${DOCKER_DIR}}"
     local pg_user pg_db
     local escaped_erc
-    pg_user="$(read_env_value POSTGRES_USER "${docker_dir}/.env")"; pg_user="${pg_user:-ub}"
-    pg_db="$(read_env_value POSTGRES_DB "${docker_dir}/.env")"; pg_db="${pg_db:-ub}"
+    pg_user="$(read_env_value POSTGRES_USER "${docker_dir}/.env")"; pg_user="${pg_user:-liferay}"
+    pg_db="$(read_env_value POSTGRES_DB "${docker_dir}/.env")"; pg_db="${pg_db:-liferay}"
     escaped_erc="$(printf "%s" "${erc}" | sed "s/'/''/g")"
     docker_compose_in "${docker_dir}" exec -T postgres \
         psql -U "${pg_user}" -d "${pg_db}" -t -A -c \

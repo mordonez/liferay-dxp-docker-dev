@@ -60,8 +60,8 @@ run_reindex() {
         # Consulta backgroundtask en BD: muestra tareas de reindex activas/pendientes
         local db_svc pg_user pg_db compose_dir
         db_svc="postgres"
-        pg_user="$(read_env_value POSTGRES_USER "${DOCKER_DIR}/.env")"; pg_user="${pg_user:-ub}"
-        pg_db="$(read_env_value POSTGRES_DB "${DOCKER_DIR}/.env")"; pg_db="${pg_db:-ub}"
+        pg_user="$(read_env_value POSTGRES_USER "${DOCKER_DIR}/.env")"; pg_user="${pg_user:-liferay}"
+        pg_db="$(read_env_value POSTGRES_DB "${DOCKER_DIR}/.env")"; pg_db="${pg_db:-liferay}"
         compose_dir="${DOCKER_DIR}"
         docker compose -f "${compose_dir}/docker-compose.yml" exec -T "${db_svc}" \
             psql -U "${pg_user}" -d "${pg_db}" -x -c "
