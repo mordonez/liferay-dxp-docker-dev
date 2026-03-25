@@ -1,0 +1,29 @@
+# https://taskfile.dev
+# Taskfile.reindex.yml — Operaciones de reindexado en Elasticsearch
+version: '3'
+
+tasks:
+  status:
+    desc: Ver progreso del reindex en Elasticsearch
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/reindex.sh progress {{.CLI_ARGS}}
+
+  watch:
+    desc: Monitorizar reindex en tiempo real
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/reindex.sh watch {{.CLI_ARGS}}
+
+  speedup-on:
+    desc: Activar modo rápido de reindex (refresh_interval=-1)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/reindex.sh speedup-on
+
+  speedup-off:
+    desc: Desactivar modo rápido de reindex (refresh_interval=1s)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/reindex.sh speedup-off
+
+  tasks:
+    desc: Mostrar tareas de reindex activas en Liferay
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/reindex.sh tasks

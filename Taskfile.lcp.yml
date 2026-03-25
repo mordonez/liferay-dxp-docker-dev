@@ -1,0 +1,39 @@
+# https://taskfile.dev
+# Taskfile.lcp.yml — Operaciones de Liferay Cloud Platform (LCP)
+version: '3'
+
+tasks:
+  # ─── db: (database) ─────────────────────────────────────────────────────────
+  sync:
+    desc: "Sincronizar BD desde LCP (descargar + importar). Ej: task db:sync -- --environment prd"
+    cmds:
+      - task: download
+        vars: {CLI_ARGS: '{{.CLI_ARGS}}'}
+      - task: import
+        vars: {CLI_ARGS: '{{.CLI_ARGS}}'}
+
+  download:
+    desc: "Descargar backup de BD desde LCP"
+    cmds:
+      - bash {{.LCP_OPS_SH}} db-download {{.CLI_ARGS}}
+
+  import:
+    desc: "Importar backup de BD (autodetecta el .gz más reciente si FILE no se provee)"
+    cmds:
+      - bash {{.LCP_OPS_SH}} db-import {{if .FILE}}--file {{.FILE}}{{end}} {{.CLI_ARGS}}
+
+  export:
+    desc: "Exportar base de datos local"
+    cmds:
+      - echo "No implementado aún en lcp-ops.sh"
+
+  # ─── doclib: (files) ────────────────────────────────────────────────────────
+  files-download:
+    desc: "Descargar Document Library desde LCP (usa --background para ejecutar en segundo plano)"
+    cmds:
+      - bash {{.LCP_OPS_SH}} db-download --download-doclib --doclib-only {{if .DEST}}--doclib-dest "{{.DEST}}"{{end}} {{.CLI_ARGS}}
+
+  files-mount:
+    desc: Montar el volumen de Document Library
+    cmds:
+      - bash {{.LCP_OPS_SH}} doclib-mount {{.CLI_ARGS}}

@@ -1,0 +1,38 @@
+# https://taskfile.dev
+# Taskfile.osgi.yml — Diagnóstico runtime y Gogo Shell
+version: '3'
+
+tasks:
+  gogo:
+    desc: Conectar al Gogo Shell OSGi de Liferay
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh gogo
+
+  status:
+    desc: "Estado de bundle OSGi. Ej: task osgi:status -- es.ricoh.ub.config"
+    vars:
+      BUNDLE: '{{.BUNDLE | default .CLI_ARGS}}'
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh bundle-status {{.BUNDLE}}
+
+  diag:
+    desc: "Diagnóstico de bundle OSGi. Ej: task osgi:diag -- es.ricoh.ub.config"
+    vars:
+      BUNDLE: '{{.BUNDLE | default .CLI_ARGS}}'
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh bundle-diag {{.BUNDLE}}
+
+  thread-dump:
+    desc: Generar thread dump del proceso Liferay
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh thread-dump
+
+  heap-dump:
+    desc: Generar heap dump del proceso Liferay
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh heap-dump
+
+  liferaycli-creds:
+    desc: Mostrar credenciales OAuth2 de la app liferay-cli (ejecutar tras el primer arranque)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/ops.sh liferaycli-creds

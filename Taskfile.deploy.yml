@@ -1,0 +1,40 @@
+# https://taskfile.dev
+# Taskfile.deploy.yml — Compilación y despliegue de módulos y tema
+version: '3'
+
+tasks:
+  all:
+    desc: Compilar y desplegar todos los módulos (dockerDeploy)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/deploy.sh run_deploy
+
+  module:
+    desc: "Compilar y desplegar un módulo OSGi. Ej: task deploy:module -- ub-config"
+    vars:
+      MODULE: '{{.MODULE | default .CLI_ARGS}}'
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/deploy.sh run_deploy_module {{.MODULE}}
+
+  theme:
+    desc: Compilar y desplegar el tema principal (ub-theme)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/deploy.sh run_deploy_theme
+
+  prepare:
+    desc: Preparar artefactos de build (sin arrancar Docker)
+    cmds:
+      - bash {{.DEV_ENV_CLI}}/plugins/liferay/deploy.sh run_prepare_build
+      - bash {{.LOCAL_OPS_SH}} worktree-deploy-cache-update
+
+  service:
+    desc: Regenerar clases Service Builder (model/service/exception)
+    cmds:
+      - cd {{.ROOT_DIR}}/liferay && ./gradlew --console=plain buildService -q
+      - cd {{.ROOT_DIR}} && git ls-files liferay/modules | grep 'service\.properties$' | xargs git checkout -- 2>/dev/null || true
+
+  cache-rebuild:
+    desc: "Reconstruir caché de deploy: detiene, compila y actualiza caché"
+    cmds:
+      - cd {{.DOCKER_DIR}} && docker compose stop && docker compose down
+      - task: prepare
+      - bash {{.LOCAL_OPS_SH}} worktree-deploy-cache-update --clean
