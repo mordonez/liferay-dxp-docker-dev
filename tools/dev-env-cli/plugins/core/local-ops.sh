@@ -346,7 +346,14 @@ has_deploy_cache_artifacts() {
 }
 
 worktree_envs_root() {
-    printf '%s\n' "${WORKTREE_BTRFS_ENVS_ROOT:-/mnt/docker-btrfs/envs}"
+    local envs_root=""
+    local main_env_file
+    main_env_file="$(main_repo_root)/docker/.env"
+    envs_root="$(read_env_value BTRFS_ENVS "${main_env_file}" 2>/dev/null || true)"
+    if [ -n "${envs_root}" ]; then
+        envs_root="$(resolve_path_from_env_file "${envs_root}" "${main_env_file}")"
+    fi
+    printf '%s\n' "${envs_root:-/mnt/docker-btrfs/envs}"
 }
 
 remove_btrfs_env_dir() {
