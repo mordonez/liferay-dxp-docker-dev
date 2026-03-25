@@ -908,8 +908,10 @@ cmd_btrfs_setup() {
     local apply=0
     local confirm=""
     local size_gb="50"
-    local mount_point="${DOCKER_DIR}/data"
-    local loop_file="${DOCKER_DIR}/data/.btrfs-loop.img"
+    # btrfs NO debe montarse en docker/data porque ocultaría data/default bajo el mount.
+    # El mount point vive en docker/btrfs, separado del directorio de datos.
+    local mount_point="${DOCKER_DIR}/btrfs"
+    local loop_file="${DOCKER_DIR}/btrfs/.loop.img"
     local mount_opts="loop,compress=zstd,noatime,user_subvol_rm_allowed"
     local source_data_root="${DOCKER_DIR}/data/default"
     local skip_migration=0
@@ -944,13 +946,10 @@ cmd_btrfs_setup() {
         configured_btrfs_root="$(read_env_value BTRFS_ROOT "${env_file}")"
         if [ -n "${configured_btrfs_root}" ]; then
             mount_point="$(resolve_path_from_env_file "${configured_btrfs_root}" "${env_file}")"
-        elif [ -d "/mnt/docker-btrfs/base" ] && [ -d "/mnt/docker-btrfs/envs" ]; then
-            mount_point="/mnt/docker-btrfs"
+            if [ "${loop_file_explicit}" -eq 0 ]; then
+                loop_file="${mount_point}/.loop.img"
+            fi
         fi
-    fi
-
-    if [ "${loop_file_explicit}" -eq 0 ] && [ "${mount_point}" = "/mnt/docker-btrfs" ]; then
-        loop_file="/var/lib/docker-btrfs.loop"
     fi
 
     if [ "${apply}" -eq 0 ] || [ "${confirm}" != "BTRFS" ]; then
